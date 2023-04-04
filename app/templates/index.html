@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        <h1>Hi, Mr. Bradman. Your name is {{ current_user.username }}.</h1>
+        <hr size="2" color="black">
+        {% for post in posts %}
+            <table>
+                <tr>
+                    <td><img src="{{ post.author.avatar(32) }}"></td>
+                    <td><b>{{ post.author.username }} says:</b> {{ post.body }}</td>
+                </tr>
+            </table>
+        {% endfor %}
+    </div>
+{% endblock %}
