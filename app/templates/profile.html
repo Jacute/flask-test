@@ -8,9 +8,12 @@
         </tr>
     </table>
     <hr size="2" color="black">
-    {% for post in posts %}
-        <p>
-            {{ post.author.username }} says: <b>{{ post.body }}</b>
-        </p>
+    {% for note in notes %}
+        <table>
+            <tr>
+                <td><img src="{{ note.author.avatar(32) }}"></td>
+                <td><p><b>{{ note.author.username }} says: </b>{{ note.body }}</p></td>
+            </tr>
+        </table>
     {% endfor %}
 {% endblock %}

@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from app.forms import LoginForm, RegistrationForm
-from app.models import User, Post
+from app.models import User, Post, Note
 from . import app, db
 
 
@@ -18,11 +18,8 @@ def index():
 @login_required
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
-    posts = [
-        {'author': user, 'body': 'Test post #1'},
-        {'author': user, 'body': 'Test post #2'}
-    ]
-    return render_template('profile.html', user=user, posts=posts)
+    notes = Note.query.filter_by(user_id=user.id).all()
+    return render_template('profile.html', user=user, notes=notes)
 
 
 @app.route('/login', methods=['GET', 'POST'])
