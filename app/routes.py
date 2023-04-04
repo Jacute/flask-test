@@ -17,9 +17,11 @@ def index():
 @app.route('/profile/<username>')
 @login_required
 def profile(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    notes = Note.query.filter_by(user_id=user.id).all()
-    return render_template('profile.html', user=user, notes=notes)
+    user = User.query.filter_by(username=username).first()
+    if user:
+        notes = Note.query.filter_by(user_id=user.id).all()
+        return render_template('profile.html', user=user, notes=notes)
+    return page_not_found()
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -59,3 +61,8 @@ def register():
         flash('New user registered')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+
+@app.errorhandler(404)
+def page_not_found():
+    return render_template('404.html')

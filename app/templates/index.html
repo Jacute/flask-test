@@ -4,7 +4,7 @@
     <div>
         <h1>Hi, Mr. Bradman. Your name is {{ current_user.username }}.</h1>
         <hr size="2" color="black">
-        {% for post in posts %}
+        {% for post in posts[::-1] %}
             <table>
                 <tr>
                     <td><img src="{{ post.author.avatar(32) }}"></td>
