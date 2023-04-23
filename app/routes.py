@@ -2,7 +2,11 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from app.forms import LoginForm, RegistrationForm
+from sqlalchemy import exists
+
+from datetime import datetime
+
+from app.forms import LoginForm, RegistrationForm, EditAboutMeForm
 from app.models import User, Post
 from . import app, db
 
@@ -56,9 +60,40 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('New user registered')
-        return redirect(url_for('login'))
+        email_exists = db.session.query(
+            exists().where(User.email == user.email)
+        ).scalar()
+        username_exists = db.session.query(
+            exists().where(User.username == user.username)
+        ).scalar()
+        if email_exists or username_exists:
+            flash('Email or password already exists.')
+        else:
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('New user registered')
+            return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+
+"""@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    form = EditAboutMeForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.about_me = form.about_me.data
+        db.session.commit()
+        flash('Your changes has been saved!')
+        return redirect(url_for('edit_profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.about_me.data = current_user.about_me
+    return render_template('edit_profile.html', title='Edit Profile', form=form)"""
+
+
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()

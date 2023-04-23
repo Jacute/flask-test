@@ -5,12 +5,13 @@
         <tr valign="top">
             <td><img src="{{ user.avatar(128) }}"></td>
             <td>User: <b>{{ user.username }}</b></td>
+            {% if user.about_me %}<td>{{ user.about_me }}</td>{% endif %}
+            {% if user.last_seen %}<td>Last seen on: {{ user.last_seen }}</td>{% endif %}
+            <!-- {% if user == current_user %}<td><a href="">Edit profile</a></td>{% endif %} -->
         </tr>
     </table>
     <hr size="2" color="black">
     {% for post in posts %}
-        <p>
-            {{ post.author.username }} says: <b>{{ post.body }}</b>
-        </p>
+        {% include '_post.html' %}
     {% endfor %}
 {% endblock %}
