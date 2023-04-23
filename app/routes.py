@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, Response
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -15,8 +15,18 @@ from . import app, db
 @login_required
 def index():
     posts = Post.query.all()
-    return render_template('index.html', title='Base', posts=posts)
+    resp = Response(render_template('index.html', title='Base', posts=posts))
+    resp.headers['Flag'] = 'SgffCTF{0h_my_g0d}'
+    return resp
 
+
+@app.route('/secret')
+def secret():
+    cookie = request.cookies.get('i_want_flag')
+    if cookie == 'yes':
+        return 'Yeah! Your flag is Sgff{c00kie5_ar3_v3ry_ta5t3}'
+    else:
+        return 'No! You should set cookie i_want_flag=yes'
 
 @app.route('/profile/<username>')
 @login_required
