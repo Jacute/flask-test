@@ -16,17 +16,8 @@ from . import app, db
 def index():
     posts = Post.query.all()
     resp = Response(render_template('index.html', title='Base', posts=posts))
-    resp.headers['Flag'] = 'SgffCTF{0h_my_g0d}'
     return resp
 
-
-@app.route('/secret')
-def secret():
-    cookie = request.cookies.get('i_want_flag')
-    if cookie == 'yes':
-        return 'Yeah! Your flag is Sgff{c00kie5_ar3_v3ry_ta5t3}'
-    else:
-        return 'No! You should set cookie i_want_flag=yes'
 
 @app.route('/profile/<username>')
 @login_required
@@ -87,7 +78,7 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-"""@app.route('/edit_profile', methods=['GET', 'POST'])
+@app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     form = EditAboutMeForm()
     if form.validate_on_submit():
@@ -99,7 +90,7 @@ def edit_profile():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    return render_template('edit_profile.html', title='Edit Profile', form=form)"""
+    return render_template('edit_profile.html', title='Edit Profile', form=form)
 
 
 @app.before_request
